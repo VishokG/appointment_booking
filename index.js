@@ -1,7 +1,7 @@
 import express from "express";
 import morgan from "morgan";
 import dotenv from "dotenv";
-import userRoutes from "./routes/userRoutes.js";
+import userRoutes from "./routes/user.js";
 import appointmentRoutes from "./routes/appointment.js";
 import cors from "cors";
 

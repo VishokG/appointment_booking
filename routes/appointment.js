@@ -1,18 +1,19 @@
 import express from "express";
 import controller from "../controllers/appointment.js";
+import authMiddleWare from "../middlewares/authMiddleWare.js";
 
 const router = express.Router();
 
 //GET ALL APPOINTMENTS
-router.get("/", controller.getApt);
+router.get("/", authMiddleWare, controller.getApt);
 //GET SPECIFIC APPOINTMENT
-router.get("/:aptId", controller.getApt);
+router.get("/:aptId", authMiddleWare, controller.getApt);
 //CREATE APPOINTMENT
-router.post("/", controller.createApt);
+router.post("/", authMiddleWare, controller.createApt);
 //UPDATE APPOINTMENT
-router.put("/:aptId", controller.updateApt);
+router.put("/:aptId", authMiddleWare, controller.updateApt);
 //DELETE APPOINTMENT
-router.delete("/:aptId", controller.deleteApt);
+router.delete("/:aptId", authMiddleWare, controller.deleteApt);
 
 
 export default router;
