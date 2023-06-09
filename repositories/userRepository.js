@@ -11,7 +11,7 @@ const writeUserData = async (userId, name, email) => {
 }
 
 const getUserFromId = async (userId) => {
-    const dbRef = ref(getDatabase(fireBaseApp));
+    const dbRef = ref(db);
     return await get(child(dbRef, `users/${userId}`)).then((snapshot) => {
     if (snapshot.exists()) {
         return snapshot.val();

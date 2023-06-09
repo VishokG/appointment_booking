@@ -7,7 +7,7 @@ const firebaseConfig = {
     storageBucket: `${process.env.FIREBASE_STORAGE_BUCKET}`,
     messagingSenderId: `${process.env.FIREBASE_MSG_ID}`,
     appId: `${process.env.FIREBASE_APP_ID}`,
-    databaseURL: "https://homeoamigo-default-rtdb.asia-southeast1.firebasedatabase.app/",
+    databaseURL: process.env.FIREBASE_DB_URL,
   };
 
 const fireBaseApp = initializeApp(firebaseConfig);

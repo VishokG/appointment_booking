@@ -8,13 +8,13 @@ dotenv.config();
 
 const app = express();
 
+//MIDDLEWARES
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 
+//ROUTES
 app.use("/api/v1/user", userRoutes);
-
-//TRIALS
 
 const PORT = process.env.PORT || 3000;
 console.log(PORT);

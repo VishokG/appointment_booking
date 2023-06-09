@@ -1,7 +1,7 @@
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import auth from "../services/auth.js";
 import jsonwebtoken from "jsonwebtoken";
-import db from "../models/userModel.js";
+import userRepository from "../repositories/userRepository.js";
 
 //HANDLE USER LOGIN
 const loginController = async (req, res) => {
@@ -25,28 +25,25 @@ const registerController = async (req, res) => {
     .then((userCredential) => {
         const user = userCredential.user;
 
-        db.writeUserData(user.uid, req.body.name, req.body.email);
-        res.status(200).send({message:"ok", success: true});
+        userRepository.writeUserData(user.uid, req.body.name, req.body.email);
+        res.status(200).send({message:"Registration Successful", success: true});
     })
     .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        res.status(500).send({errorCode, message: errorMessage})
+        // const errorCode = error.code;
+        res.status(500).send({message: error.message, success: false})
     });
 }
 
 const authController = async (req, res) => {
     try {
-        const user = await db.getUserFromId(req.body.userId);
+        const user = await userRepository.getUserFromId(req.body.userId);
         
         if(!user) {
-            console.log(1);
             return res.status(200).send({
                 message: "user not found",
                 success: false
             })
         } else {
-            console.log(user);
             res.status(200).send({
                 success: true,
                 data: {
@@ -56,9 +53,8 @@ const authController = async (req, res) => {
             })
         }
     } catch(err) {
-        console.log(3);
         console.log(err);
-        res.status()
+        res.status(400).send({message: err, success: false})
     }
 }
 
