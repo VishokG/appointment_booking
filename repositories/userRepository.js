@@ -4,7 +4,10 @@ import fireBaseApp from "../config/firebase.js";
 const db = getDatabase(fireBaseApp);
 
 const writeUserData = async (userId, name, email) => {
-    await set(ref(db, 'users/' + userId), {
+    // const dbRef = ref(db);
+    console.log(db);
+
+    await set(ref(db, `users/${userId}`), {
       name: name,
       email: email
     });
@@ -12,7 +15,7 @@ const writeUserData = async (userId, name, email) => {
 
 const getUserFromId = async (userId) => {
     const dbRef = ref(db);
-    return await get(child(dbRef, `users/${userId}`)).then((snapshot) => {
+    return await get(ref(db, `users/${userId}`)).then((snapshot) => {
     if (snapshot.exists()) {
         return snapshot.val();
     } else {

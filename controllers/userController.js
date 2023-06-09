@@ -20,16 +20,19 @@ const loginController = async (req, res) => {
 
 //HANDLE USER REGISTRATION
 const registerController = async (req, res) => {
-
+    if(!req.body.name || !req.body.password || !req.body.email) {
+        res.status(400).send("Incomplete information");
+    }
+    
     await createUserWithEmailAndPassword(auth, req.body.email, req.body.password)
     .then((userCredential) => {
         const user = userCredential.user;
-
         userRepository.writeUserData(user.uid, req.body.name, req.body.email);
         res.status(200).send({message:"Registration Successful", success: true});
     })
     .catch((error) => {
         // const errorCode = error.code;
+        console.log(error);
         res.status(500).send({message: error.message, success: false})
     });
 }
