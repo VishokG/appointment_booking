@@ -40,7 +40,11 @@ const getAppointment = async (aptId) => {
         path += "/" + aptId;
     }
     
-    return await get(ref(db, path)).then(snapshot => snapshot.val());
+    return await get(ref(db, path)).then(snapshot => {
+        return {
+            exists: snapshot.exists(),
+        }
+    });
 }
 
 const updateAppointment = async (aptId, day, timeStart) => {

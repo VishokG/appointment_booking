@@ -1,15 +1,19 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";  //FIREBASE AUTHENTICATION FUNCTIONS
+import { validationResult } from "express-validator";
 import auth from "../services/auth.js";
 import jwt from "jsonwebtoken";
-import repository from "../repositories/user.js";
-import { validationResult } from "express-validator";
+import { writeUserData } from "../repositories/user.js";
 
 //HANDLE USER LOGIN
-const loginController = async (req, res) => {
-    const error = validationResult(req);
+export const loginController = async (req, res) => {
+    const err = validationResult(req);
     
-    if(!error.isEmpty()) {
-        res.status(200).json({message:"Errors present", success: false, errors: error.mapped()});
+    if(!err.isEmpty()) {
+        res.status(200).json({
+            success: false, 
+            message:"Invalid input", 
+            error: err.mapped()
+        });
         return;
     }
 
@@ -17,57 +21,46 @@ const loginController = async (req, res) => {
     .then((userCredential) => {
         const user = userCredential.user;
         const token = jwt.sign({id: user.uid}, process.env.JWT_SECRET, {expiresIn: '1d'})
-        res.status(200).json({message:"Login Successful", success: true, token});
+        res.status(200).json({
+            success: true,
+            message:"Login Successful", 
+            token
+        });
     })
     .catch((error) => {
-        res.status(200).json({success: false, message: error.message})
+        res.status(200).json({
+            success: false, 
+            error
+        })
     });
 }
 
 //HANDLE USER REGISTRATION
-const registerController = async (req, res) => {
-    const error = validationResult(req);
+export const registerController = async (req, res) => {
+    const err = validationResult(req);
     
-    if(!error.isEmpty()) {
-        res.status(200).json({message:"Errors present", success: false, errors: error.mapped()});
+    if(!err.isEmpty()) {
+        res.status(200).json({
+            success: false, 
+            message:"Invalid input", 
+            error: err.mapped()
+        });
         return;
     }
     
     await createUserWithEmailAndPassword(auth, req.body.email, req.body.password)
     .then((userCredential) => {
         const user = userCredential.user;
-        repository.writeUserData(user.uid, req.body.name, req.body.email);
-        res.status(200).json({message:"Registration Successful", success: true});
+        writeUserData(user.uid, req.body.name, req.body.email);
+        res.status(200).json({
+            success: true,
+            message:"Registration Successful"
+        });
     })
     .catch((error) => {
-        // const errorCode = error.code;
-        console.log(error);
-        res.status(500).json({message: error.message, success: false})
+        res.status(200).json({
+            success: false, 
+            error
+        })
     });
 }
-
-const authController = async (req, res) => {
-    try {
-        const user = await repository.getUserFromId(req.body.userId);
-        
-        if(!user) {
-            return res.status(200).json({
-                message: "user not found",
-                success: false
-            })
-        } else {
-            res.status(200).json({
-                success: true,
-                data: {
-                    name: user.name,
-                    email: user.email
-                }
-            })
-        }
-    } catch(err) {
-        console.log(err);
-        res.status(400).json({message: err, success: false})
-    }
-}
-
-export default {loginController, registerController, authController};
