@@ -29,7 +29,7 @@ export default {
                 errorMessage: "Please enter the time of appointment"
             },
             isInt: {
-                errorMessage: "Time must be a number between 10 and 18",
+                errorMessage: "Time must be a number between 10(10 AM) and 18(6 PM)",
                 options: {
                     min: 10,
                     max: 18
